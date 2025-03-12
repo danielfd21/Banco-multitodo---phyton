@@ -31,7 +31,7 @@ class CuentaWeb():
                     cedula = repo_cue_web.Obtener_cedula_cuenta_web(usuario)
 
                 else:
-                    print("La contraseña es incorrecta " + cla_has)
+                    print("La contraseña es incorrecta ")
 
                 
             
@@ -95,7 +95,42 @@ class CuentaWeb():
                  else:
                    repo_cli.LLamar_Procedimiento_Transferencia(cuenta_dep,cuenta_ben,cant)
 
-             
+
+    def Consultar_Estado_Cuenta(self,cuenta,cedula):
+
+        if cuenta is None:
+            print("Por favor ingrese su numero de cuenta")
+        else:
+
+            ver_cue  = repo_cli.consultar_datos_Cuenta_dos_campos("Numero_cuenta","Cedula",cuenta,cedula)
+
+            if ver_cue is True:
+                repo_cue_web.Consulta_Estado_Cuenta(cuenta)
+            else:
+                print("El numero de cuenta ingresado no pertenece al Usuario")
+    
+    def Filtrar_Estado_Cuenta(self,cuenta,cedula,Mes,Año):
+
+        if cuenta is None:
+            print("Por favor ingrese su numero de cuenta")
+        else:
+
+            ver_cue  = repo_cli.consultar_datos_Cuenta_dos_campos("Numero_cuenta","Cedula",cuenta,cedula)
+
+            if ver_cue is True:
+                repo_cue_web.Consulta_Filtro_Estado_Cuenta_Dos_Campos(cuenta,"MONTH(transaccion.fecha_tra)","YEAR(transaccion.fecha_tra)",Mes,Año)
+            else:
+                print("El numero de cuenta ingresado no pertenece al Usuario")
+
+
+
+            
+
+            
+
+
+
+
              
                  
 

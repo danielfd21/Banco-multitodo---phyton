@@ -48,7 +48,9 @@ while menu != 3:
 
             opcion_banca = int(input("Ingresa una opción"))
 
-            if opcion == 1:
+            if opcion_banca == 1:
+
+                print("---Transferencia---")
 
                 cuenta_dep = input("Ingrese su numero cuenta").strip()
                 
@@ -60,6 +62,36 @@ while menu != 3:
                     nombre_ben = input("Ingrese el nombre del beneficiario").strip()
                     cantidad = float(input("Ingrese la cantidad a depositar").strip())
                     cue_web.Transferir(cuenta_dep,cuenta_ben,nombre_ben,cantidad,cedula)
+            if opcion_banca == 2:
+
+                print("---Consulta de estado de cuenta---")
+                cuenta = input("Por favor ingrese su numero de cuenta").strip()
+                print("-----------Saldo---------------------")
+                cue_web.Mostrar_Datos_depositante(cuenta)
+                print("-------------------------------------")
+                cue_web.Consultar_Estado_Cuenta(cuenta,cedula)
+                print("¿Desea filtrar por mes su busqueda?")
+                opcion_filtro = input("Y = SI /N = NO").strip()
+                if opcion_filtro is "Y":
+                    print("-----MES-----")
+                    print("ENERO = 01")
+                    print("FEBRERO = 02")
+                    print("MARZO = 03")
+                    print("ABRIL = 04")
+                    print("MAYO = 05")
+                    print("JUNIO = 06")
+                    print("JULIO = 07")
+                    print("AGOSTO = 08")
+                    print("SEPTIEMBRE = 09")
+                    print("OCTUBRE = 10")
+                    print("NOVIEMBRE = 11")
+                    print("DICIEMBTE = 12")
+
+                    mes = input("Digite el numero de mes: ").strip()
+                    año = input("Digite el numero del año: ").strip()
+                    cue_web.Filtrar_Estado_Cuenta(cuenta,cedula,mes,año)
+
+                
        
 
     
@@ -87,6 +119,14 @@ while menu != 3:
             clave2 = input("Ingrese de nuevo la contraseña: ").strip()
 
             cli.crear_cuenta_web(usuario,clave1,clave2,cedula)
+
+            
+
+
+
+            
+
+            
 
         else: 
             print("Error:")
