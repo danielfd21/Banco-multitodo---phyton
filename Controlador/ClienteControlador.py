@@ -61,7 +61,11 @@ while menu != 3:
                     cuenta_ben = input("Ingrese el numero de cuenta del beneficiario").strip()
                     nombre_ben = input("Ingrese el nombre del beneficiario").strip()
                     cantidad = float(input("Ingrese la cantidad a depositar").strip())
-                    cue_web.Transferir(cuenta_dep,cuenta_ben,nombre_ben,cantidad,cedula)
+                    id_tra = cue_web.Transferir(cuenta_dep,cuenta_ben,nombre_ben,cantidad,cedula)
+                    print(f"¿Desea Guradar el comprobante?")
+                    op_pdf = input("Si = Y/ No = N").strip()
+                    if op_pdf == "Y":
+                        cue_web.Crear_Pdf(cuenta_dep,id_tra)
             if opcion_banca == 2:
 
                 print("---Consulta de estado de cuenta---")
@@ -70,9 +74,9 @@ while menu != 3:
                 cue_web.Mostrar_Datos_depositante(cuenta)
                 print("-------------------------------------")
                 cue_web.Consultar_Estado_Cuenta(cuenta,cedula)
-                print("¿Desea filtrar por mes su busqueda?")
+                print(f"¿Desea filtrar por mes su busqueda?")
                 opcion_filtro = input("Y = SI /N = NO").strip()
-                if opcion_filtro is "Y":
+                if opcion_filtro == "Y":
                     print("-----MES-----")
                     print("ENERO = 01")
                     print("FEBRERO = 02")

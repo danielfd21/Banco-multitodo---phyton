@@ -53,7 +53,9 @@ class RepositorioCliente():
 
         return saldo  
     
-    def Insertar_transferencia(self,cuenta_dep,cuenta_ben,cant):
+    def Insertar_transferencia(self,cuenta_dep,cuenta_ben,cant)-> int:
+
+        id_tra = 0
 
         fecha = datetime.date.today()
         hora = datetime.datetime.now().strftime('%H:%M:%S')
@@ -62,9 +64,19 @@ class RepositorioCliente():
         val = (fecha,hora,cant,cuenta_dep,cuenta_ben)
         self.cursor.execute(insertar,val)
         self.conexion.commit()
+        
+        if self.cursor.rowcount > 0:
+
+            id_tra = self.cursor.lastrowid
+        
+        return id_tra
+
+    
 
 
-    def LLamar_Procedimiento_Transferencia(self,cuenta_dep,cuenta_ben,cant):
+    def LLamar_Procedimiento_Transferencia(self,cuenta_dep,cuenta_ben,cant)-> int:
+
+        id_tra = 0
 
         Transferir = "CALL Transferir(%s,%s,%s)"
         val = (cuenta_dep,cuenta_ben,cant)
@@ -73,7 +85,8 @@ class RepositorioCliente():
 
         if self.cursor.rowcount > 0:
             print("Registro exitoso")
-            self.Insertar_transferencia(cuenta_dep,cuenta_ben,cant)
+            id_tra =  self.Insertar_transferencia(cuenta_dep,cuenta_ben,cant)
+        return id_tra
     
             
     def Consulta_cliente_JOIN_cuenta_dos_campos(self,campo1, campo2, objeto1, objeto2) -> bool:

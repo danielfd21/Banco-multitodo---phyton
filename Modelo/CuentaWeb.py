@@ -3,6 +3,8 @@ from Modelo.base_de_datos.Repositorio.ClienteRepositorio import RepositorioClien
 
 import hashlib
 
+from fpdf import FPDF
+
 repo_cue_web = CuentaWebRepositorio()
 repo_cli = RepositorioCliente()
 
@@ -72,7 +74,9 @@ class CuentaWeb():
 
     
 
-    def Transferir(self,cuenta_dep, cuenta_ben, nombre_ben, cant,cedula):
+    def Transferir(self,cuenta_dep, cuenta_ben, nombre_ben, cant,cedula)-> int:
+
+        id_tra = 0
 
         if cuenta_dep is None and cuenta_ben is None:
 
@@ -93,7 +97,9 @@ class CuentaWeb():
                  elif ver_cuen_ben is False:
                    print("Los datos de la cuenta del beneficiario son incorrectos")
                  else:
-                   repo_cli.LLamar_Procedimiento_Transferencia(cuenta_dep,cuenta_ben,cant)
+                   id_tra = repo_cli.LLamar_Procedimiento_Transferencia(cuenta_dep,cuenta_ben,cant)
+        
+        return id_tra
 
 
     def Consultar_Estado_Cuenta(self,cuenta,cedula):
@@ -105,7 +111,22 @@ class CuentaWeb():
             ver_cue  = repo_cli.consultar_datos_Cuenta_dos_campos("Numero_cuenta","Cedula",cuenta,cedula)
 
             if ver_cue is True:
-                repo_cue_web.Consulta_Estado_Cuenta(cuenta)
+               consultado = repo_cue_web.Consulta_Estado_Cuenta(cuenta)
+               for imprimir in consultado :
+                        print("----------------------")
+                        print("----------------------")
+                        print("----------------------")
+                        print(f"Fecha:  {imprimir[0]}")
+                        print(f"Hora: {imprimir[1]}")
+                        print(f"Cantidad {imprimir[2]} $")
+                        print(f"Remitente: {imprimir[3]}")
+                        print(f"Cuenta del remitente: {imprimir[4]}")
+                        print(f"Beneficiario: {imprimir[5]}")
+                        print(f"Cuenta del beneficiario: {imprimir[6]}")
+                        print("----------------------")
+                        print("----------------------")
+                        print("----------------------")
+
             else:
                 print("El numero de cuenta ingresado no pertenece al Usuario")
     
@@ -118,9 +139,82 @@ class CuentaWeb():
             ver_cue  = repo_cli.consultar_datos_Cuenta_dos_campos("Numero_cuenta","Cedula",cuenta,cedula)
 
             if ver_cue is True:
-                repo_cue_web.Consulta_Filtro_Estado_Cuenta_Dos_Campos(cuenta,"MONTH(transaccion.fecha_tra)","YEAR(transaccion.fecha_tra)",Mes,Año)
+              consultado =  repo_cue_web.Consulta_Filtro_Estado_Cuenta_Dos_Campos(cuenta,"MONTH(transaccion.fecha_tra)","YEAR(transaccion.fecha_tra)",Mes,Año)
+              for imprimir in consultado :
+                        print("----------------------")
+                        print("----------------------")
+                        print("----------------------")
+                        print(f"Fecha:  {imprimir[0]}")
+                        print(f"Hora: {imprimir[1]}")
+                        print(f"Cantidad {imprimir[2]} $")
+                        print(f"Remitente: {imprimir[3]}")
+                        print(f"Cuenta del remitente: {imprimir[4]}")
+                        print(f"Beneficiario: {imprimir[5]}")
+                        print(f"Cuenta del beneficiario: {imprimir[6]}")
+                        print("----------------------")
+                        print("----------------------")
+                        print("----------------------")
             else:
                 print("El numero de cuenta ingresado no pertenece al Usuario")
+    
+    def Crear_Pdf(self,cuenta,id_tra):
+
+        Array =  repo_cue_web.Consulta_Estado_Cuenta_PDF(cuenta,id_tra)
+        saldo = repo_cli.Consulta_Saldo_depositante(cuenta)
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial",size=12)
+        
+        
+       
+        for imprimir in Array:
+
+            fecha =  imprimir[0]
+            hora =  imprimir[1]
+            cantidad =  imprimir[2]
+            remitente =  imprimir[3]
+            cuenta_rem =  imprimir[4]
+            beneficiario = imprimir[5]
+            cuenta_ben =  imprimir[6]
+
+            pdf.cell(200,10,txt="Comprobante de transferencia - Banco Multitodo",ln=True,align="C")
+            pdf.cell(200,10,txt="---------------------------------------------------------------------",ln=True,align="L")
+            formatted_fecha = fecha.strftime("%Y-%m-%d")
+            pdf.cell(200,10,txt=f"Fecha:  {formatted_fecha}",ln=True,align="L")
+        
+      
+            total_segundos = int(hora.total_seconds())
+            horas = total_segundos  // 3600
+            minutos = (total_segundos % 3600) // 60
+            segundos = total_segundos  % 60
+            formatted_hora = f"{horas:02}:{minutos:02}:{segundos:02}"
+
+            pdf.cell(200,10,txt=f"Hora: {formatted_hora}",ln=True,align="L")
+            pdf.cell(200,10,txt=f"Cantidad: {cantidad} $",ln=True,align="L")
+            pdf.cell(200,10,txt=f"Nombre del remitente:  {remitente}",ln=True,align="L")
+            pdf.cell(200,10,txt=f"Cuenta del remitente:  {cuenta_rem}",ln=True,align="L")
+            pdf.cell(200,10,txt=f"Nombre del Beneficiario: {beneficiario}",ln=True,align="L")
+            pdf.cell(200,10,txt=f"Cuenta del remitente:  {cuenta_ben}",ln=True,align="L")
+            pdf.cell(200,10,txt=f"Saldo restante: {saldo} $",ln=True,align="L")
+
+            pdf.cell(200,10,txt="---------------------------------------------------------------------",ln=True,align="L")
+
+
+
+        
+        
+        
+
+
+        
+
+        
+
+        pdf.output("Archivo.pdf")
+        
+
+
+
 
 
 

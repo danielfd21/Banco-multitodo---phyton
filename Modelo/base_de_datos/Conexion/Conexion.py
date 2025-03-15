@@ -2,7 +2,7 @@ import mysql.connector
 
 def conexion():
     
-  return mysql.connector.connect(
+  con = mysql.connector.connect(
 
     host = "localhost",
     user = "root",
@@ -10,4 +10,5 @@ def conexion():
     database = "Banco_multitodo" 
 
   )
-
+  con.autocommit = True
+  return con

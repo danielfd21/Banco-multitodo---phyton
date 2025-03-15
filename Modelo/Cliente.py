@@ -64,11 +64,7 @@ class CLiente():
 
                     cla_has = hashlib.sha256(clave_cuen_web.encode()).hexdigest()
                     nueva_cuenta = CuentaWeb(est,usuario,cla_has,cedula,inte)
-                    crear_cuenta = nueva_cuenta.crear_cuenta_web()
-                    if crear_cuenta is True:
-                        print("Registro exitoso")
-                    else:
-                        print("Lo sentimos ha ocurrido un error")
+                    nueva_cuenta.crear_cuenta_web()
                     
 
                     
